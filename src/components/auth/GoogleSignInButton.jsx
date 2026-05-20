@@ -18,14 +18,25 @@ export default function GoogleSignInButton({
     setLoading(true);
 
     try {
+      const origin =
+        typeof window !== "undefined"
+          ? window.location.origin
+          : process.env.NEXT_PUBLIC_APP_URL ||
+            "http://localhost:3000";
+
+      const resolvedCallback = callbackURL.startsWith("http")
+        ? callbackURL
+        : `${origin}${callbackURL.startsWith("/") ? "" : "/"}${callbackURL}`;
+
       await authClient.signIn.social({
         provider: "google",
-        callbackURL,
+        callbackURL: resolvedCallback,
       });
     } catch (error) {
       console.error(error);
       showError(
-        "Google sign-in failed. Check server Google OAuth env variables."
+        error?.message ||
+          "Google sign-in failed. Add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET on the server, and set the redirect URI to {your-app}/api/auth/callback/google in Google Cloud Console."
       );
       setLoading(false);
     }

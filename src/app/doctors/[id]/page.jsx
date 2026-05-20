@@ -12,6 +12,8 @@ import BookAppointmentModal from "@/components/appointments/appointments";
 
 import { useSession } from "@/hooks/useSession";
 
+import DoctorReviews from "@/components/reviews/DoctorReviews";
+
 import { getSingleDoctor } from "@/services/doctors";
 
 export default function DoctorDetailsPage() {
@@ -102,6 +104,12 @@ export default function DoctorDetailsPage() {
             ৳ {doctor.fee}
           </p>
 
+          {doctor.rating != null ? (
+            <p className="mt-2 text-lg text-amber-600">
+              ★ {doctor.rating}
+            </p>
+          ) : null}
+
           <Button
             variant="primary"
             className="mt-6"
@@ -111,6 +119,16 @@ export default function DoctorDetailsPage() {
           </Button>
         </Card.Content>
       </Card>
+
+      <DoctorReviews
+        doctor={doctor}
+        user={user}
+        onRatingUpdated={(rating) =>
+          setDoctor((prev) =>
+            prev ? { ...prev, rating } : prev
+          )
+        }
+      />
 
       {/* 👇 MODAL */}
       {open && (

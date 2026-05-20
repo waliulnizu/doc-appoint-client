@@ -15,6 +15,8 @@ import {
 
 import { showError, showSuccess } from "@/lib/toast";
 
+import { resolveDoctorId } from "@/utils/doctorId";
+
 export default function MyBookings({ userEmail }) {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -140,6 +142,15 @@ export default function MyBookings({ userEmail }) {
                 </button>
               </div>
             </div>
+
+            {resolveDoctorId(item) ? (
+              <Link
+                href={`/doctors/${resolveDoctorId(item)}#reviews`}
+                className="mt-3 inline-block text-sm font-medium text-blue-600 hover:underline"
+              >
+                Leave a review →
+              </Link>
+            ) : null}
 
             <dl className="mt-4 grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
               <div>

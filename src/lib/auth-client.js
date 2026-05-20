@@ -1,10 +1,12 @@
 import { createAuthClient } from "better-auth/react";
 
-const serverUrl =
-  process.env.NEXT_PUBLIC_SERVER_URL ||
-  "http://localhost:5000";
+// Auth requests go through Next.js rewrite → same origin as the app.
+// Google redirect URI: http://localhost:3000/api/auth/callback/google
+const appUrl =
+  process.env.NEXT_PUBLIC_APP_URL ||
+  "http://localhost:3000";
 
 export const authClient = createAuthClient({
-  baseURL: serverUrl,
+  baseURL: appUrl,
   basePath: "/api/auth",
 });
