@@ -7,6 +7,12 @@ export const createAppointment = async (payload) => {
 };
 // Get user appointments
 export const getUserAppointments = async (email) => {
-  const res = await api.get(`/appointments/${email}`);
+  const res = await api.get(`/appointments/user/${email}`);
+  return res.data;
+};
+
+// Update appointment
+export const updateAppointment = async (id, payload) => {
+  const res = await api.put(`/appointments/${id}`, payload);
   return res.data;
 };

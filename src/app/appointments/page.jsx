@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 
 import { useRouter } from "next/navigation";
 
+import EditAppointmentModal from "@/components/appointments/EditAppointmentModal";
+
 import Loading from "@/components/shared/Loading";
 
 import { useSession } from "@/hooks/useSession";
@@ -19,6 +21,7 @@ export default function AppointmentsPage() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [editing, setEditing] = useState(null);
 
   useEffect(() => {
     if (sessionLoading) return;
@@ -30,6 +33,7 @@ export default function AppointmentsPage() {
 
     const loadAppointments = async () => {
       try {
+        setError("");
         const result = await getUserAppointments(user.email);
         setAppointments(result.data || []);
       } catch (err) {
@@ -42,6 +46,15 @@ export default function AppointmentsPage() {
 
     loadAppointments();
   }, [user?.email, sessionLoading, router]);
+
+  const handleUpdateSuccess = (updated) => {
+    setAppointments((prev) =>
+      prev.map((item) =>
+        item._id === updated._id ? { ...item, ...updated } : item
+      )
+    );
+    setEditing(null);
+  };
 
   if (sessionLoading || loading) {
     return <Loading />;
@@ -95,9 +108,19 @@ export default function AppointmentsPage() {
                     Patient: {item.patientName}
                   </p>
                 </div>
-                <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-700">
-                  {item.gender}
-                </span>
+
+                <div className="flex items-center gap-2">
+                  <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-700">
+                    {item.gender}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setEditing(item)}
+                    className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                  >
+                    Edit
+                  </button>
+                </div>
               </div>
 
               <dl className="mt-4 grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
@@ -122,6 +145,14 @@ export default function AppointmentsPage() {
           ))}
         </div>
       )}
+
+      {editing ? (
+        <EditAppointmentModal
+          appointment={editing}
+          onClose={() => setEditing(null)}
+          onSuccess={handleUpdateSuccess}
+        />
+      ) : null}
     </main>
   );
 }
