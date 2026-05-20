@@ -2,25 +2,24 @@
 
 import { useEffect, useState } from "react";
 
-import DoctorCard from "@/components/doctors/DoctorCard";
-
-import Loading from "@/components/shared/Loading";
+import HeroSection from "@/components/home/HeroSection";
+import HowItWorks from "@/components/home/HowItWorks";
+import TopRatedDoctors from "@/components/home/TopRatedDoctors";
+import WhyChooseUs from "@/components/home/WhyChooseUs";
 
 import { getDoctors } from "@/services/doctors";
 
 export default function HomePage() {
   const [doctors, setDoctors] = useState([]);
-
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadDoctors = async () => {
       try {
         const data = await getDoctors();
-
         setDoctors(data.data || []);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       } finally {
         setLoading(false);
       }
@@ -29,24 +28,12 @@ export default function HomePage() {
     loadDoctors();
   }, []);
 
-  if (loading) {
-    return <Loading />;
-  }
-
   return (
-    <div className="p-10">
-      <h1 className="text-4xl font-bold mb-8">
-        DocAppoint Doctors
-      </h1>
-
-      <div className="grid md:grid-cols-3 gap-6">
-        {doctors.map((doctor) => (
-          <DoctorCard
-            key={String(doctor._id)}
-            doctor={doctor}
-          />
-        ))}
-      </div>
-    </div>
+    <>
+      <HeroSection />
+      <TopRatedDoctors doctors={doctors} loading={loading} />
+      <WhyChooseUs />
+      <HowItWorks />
+    </>
   );
 }

@@ -21,7 +21,11 @@ import AuthField, { AuthInput } from "@/components/auth/AuthField";
 
 import AuthShell from "@/components/auth/AuthShell";
 
+import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
+
 import { authClient } from "@/lib/auth-client";
+
+import { showError, showSuccess } from "@/lib/toast";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -53,15 +57,15 @@ export default function RegisterPage() {
       console.log("Register response:", result);
 
       if (result.error) {
-        alert(result.error.message);
+        showError(result.error.message);
         return;
       }
 
-      alert("Registration successful! You can sign in now.");
+      showSuccess("Registration successful! Please sign in.");
       router.push("/login");
     } catch (error) {
-      console.log(error);
-      alert("Something went wrong. Please try again.");
+      console.error(error);
+      showError("Something went wrong. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -69,7 +73,7 @@ export default function RegisterPage() {
 
   return (
     <AuthShell
-      title="Create your account"
+      title="Register"
       subtitle="Join DocAppoint to find doctors and manage appointments easily."
       footer={
         <>
@@ -78,7 +82,7 @@ export default function RegisterPage() {
             href="/login"
             className="font-semibold text-blue-600 hover:text-blue-700 hover:underline"
           >
-            Sign in
+            Login
           </Link>
         </>
       }
@@ -194,8 +198,16 @@ export default function RegisterPage() {
           className="mt-1 min-h-11 text-base font-semibold"
           isDisabled={submitting}
         >
-          {submitting ? "Creating account…" : "Create account"}
+          {submitting ? "Creating account…" : "Register"}
         </Button>
+
+        <div className="flex items-center gap-3 text-sm text-slate-400">
+          <span className="h-px flex-1 bg-slate-200" />
+          or
+          <span className="h-px flex-1 bg-slate-200" />
+        </div>
+
+        <GoogleSignInButton callbackURL="/dashboard" />
       </form>
     </AuthShell>
   );

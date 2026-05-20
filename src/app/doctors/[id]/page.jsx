@@ -25,8 +25,9 @@ export default function DoctorDetailsPage() {
 
   const handleBookClick = () => {
     if (!user) {
-      alert("Please login first to book an appointment.");
-      router.push("/login");
+      router.push(
+        `/login?redirect=${encodeURIComponent(`/doctors/${params.id}`)}`
+      );
       return;
     }
 

@@ -25,7 +25,7 @@ export default function Navbar() {
 
           <Link href="/">Home</Link>
 
-          <Link href="/appointments">
+          <Link href="/doctors">
             All Appointments
           </Link>
 

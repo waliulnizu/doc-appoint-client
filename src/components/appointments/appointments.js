@@ -4,6 +4,8 @@ import { useState } from "react";
 
 import { createAppointment } from "@/services/appointments";
 
+import { showError, showSuccess } from "@/lib/toast";
+
 export default function BookAppointmentModal({
   doctor,
   user,
@@ -56,6 +58,7 @@ export default function BookAppointmentModal({
       // DevTools → Console এ server response
       console.log("Appointment saved:", response);
 
+      showSuccess("Appointment booked successfully!");
       onSuccess?.();
       onClose();
     } catch (err) {
@@ -67,7 +70,7 @@ export default function BookAppointmentModal({
         "Failed to book appointment";
 
       setError(message);
-      alert(message);
+      showError(message);
     } finally {
       setLoading(false);
     }

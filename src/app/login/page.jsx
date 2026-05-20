@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { useState } from "react";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { useForm } from "react-hook-form";
 
@@ -16,14 +16,17 @@ import AuthField, { AuthInput } from "@/components/auth/AuthField";
 
 import AuthShell from "@/components/auth/AuthShell";
 
+import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
+
 import { authClient } from "@/lib/auth-client";
+
+import { showError } from "@/lib/toast";
 
 export default function LoginPage() {
   const router = useRouter();
-
-  const meta = {
-    title: "Login | DocAppoint",
-  };
+  const searchParams = useSearchParams();
+  const redirectTo =
+    searchParams.get("redirect") || "/dashboard";
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -37,23 +40,22 @@ export default function LoginPage() {
     setSubmitting(true);
 
     try {
-      const result =
-        await authClient.signIn.email({
-          email: data.email,
-          password: data.password,
-        });
+      const result = await authClient.signIn.email({
+        email: data.email,
+        password: data.password,
+      });
 
       if (result.error) {
-        alert(result.error.message);
+        showError(result.error.message);
         return;
       }
 
       await authClient.getSession();
       router.refresh();
-      router.push("/");
+      router.push(redirectTo);
     } catch (error) {
-      console.log(error);
-      alert("Something went wrong. Please try again.");
+      console.error(error);
+      showError("Something went wrong. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -61,7 +63,7 @@ export default function LoginPage() {
 
   return (
     <AuthShell
-      title="Welcome back"
+      title="Login"
       subtitle="Sign in to book appointments with trusted doctors."
       footer={
         <>
@@ -70,7 +72,7 @@ export default function LoginPage() {
             href="/register"
             className="font-semibold text-blue-600 hover:text-blue-700 hover:underline"
           >
-            Create one
+            Register
           </Link>
         </>
       }
@@ -80,7 +82,7 @@ export default function LoginPage() {
         className="flex flex-col gap-5"
       >
         <AuthField
-          label="Email address"
+          label="Email"
           error={errors.email?.message}
         >
           <div className="relative">
@@ -132,8 +134,16 @@ export default function LoginPage() {
           className="mt-1 min-h-11 text-base font-semibold"
           isDisabled={submitting}
         >
-          {submitting ? "Signing in…" : "Sign in"}
+          {submitting ? "Signing in…" : "Login"}
         </Button>
+
+        <div className="flex items-center gap-3 text-sm text-slate-400">
+          <span className="h-px flex-1 bg-slate-200" />
+          or
+          <span className="h-px flex-1 bg-slate-200" />
+        </div>
+
+        <GoogleSignInButton callbackURL={redirectTo} />
       </form>
     </AuthShell>
   );

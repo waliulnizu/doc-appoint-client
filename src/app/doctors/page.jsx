@@ -1,26 +1,27 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-import { getDoctors } from "@/services/doctors";
-
-import Loading from "@/components/shared/Loading";
+import { HiOutlineSearch } from "react-icons/hi";
 
 import DoctorCard from "@/components/doctors/DoctorCard";
 
+import Loading from "@/components/shared/Loading";
+
+import { getDoctors } from "@/services/doctors";
+
 export default function DoctorsPage() {
   const [doctors, setDoctors] = useState([]);
-
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const loadDoctors = async () => {
       try {
         const data = await getDoctors();
-
         setDoctors(data.data || []);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       } finally {
         setLoading(false);
       }
@@ -29,24 +30,57 @@ export default function DoctorsPage() {
     loadDoctors();
   }, []);
 
+  const filtered = useMemo(() => {
+    const query = search.trim().toLowerCase();
+
+    if (!query) return doctors;
+
+    return doctors.filter((doctor) =>
+      (doctor.name || "").toLowerCase().includes(query)
+    );
+  }, [doctors, search]);
+
   if (loading) {
     return <Loading />;
   }
 
   return (
-    <main className="max-w-6xl mx-auto px-5 py-10">
-      <h1 className="text-4xl font-bold mb-10">
-        Our Doctors
+    <main className="mx-auto max-w-6xl px-5 py-10">
+      <h1 className="text-4xl font-bold text-slate-900">
+        All Appointments
       </h1>
+      <p className="mt-2 text-slate-500">
+        Browse all available doctors and book a visit
+      </p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {doctors.map((doctor) => (
-          <DoctorCard
-            key={String(doctor._id)}
-            doctor={doctor}
-          />
-        ))}
+      <div className="relative mt-8 max-w-md">
+        <HiOutlineSearch
+          className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-lg text-slate-400"
+          aria-hidden
+        />
+        <input
+          type="search"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search by doctor name…"
+          className="input input-bordered w-full pl-10"
+        />
       </div>
+
+      {filtered.length === 0 ? (
+        <p className="mt-12 text-center text-slate-500">
+          No doctors match your search.
+        </p>
+      ) : (
+        <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {filtered.map((doctor) => (
+            <DoctorCard
+              key={String(doctor._id)}
+              doctor={doctor}
+            />
+          ))}
+        </div>
+      )}
     </main>
   );
 }
