@@ -12,7 +12,10 @@ import Loading from "@/components/shared/Loading";
 
 import { useSession } from "@/hooks/useSession";
 
-import { getUserAppointments } from "@/services/appointments";
+import {
+  deleteAppointment,
+  getUserAppointments,
+} from "@/services/appointments";
 
 export default function AppointmentsPage() {
   const router = useRouter();
@@ -22,6 +25,7 @@ export default function AppointmentsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [editing, setEditing] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
 
   useEffect(() => {
     if (sessionLoading) return;
@@ -54,6 +58,35 @@ export default function AppointmentsPage() {
       )
     );
     setEditing(null);
+  };
+
+  const handleDelete = async (item) => {
+    const confirmed = window.confirm(
+      `Delete appointment with ${item.doctorName || "this doctor"} on ${item.appointmentDate}?`
+    );
+
+    if (!confirmed) return;
+
+    setDeletingId(item._id);
+
+    try {
+      await deleteAppointment(item._id);
+      setAppointments((prev) =>
+        prev.filter((a) => a._id !== item._id)
+      );
+      if (editing?._id === item._id) {
+        setEditing(null);
+      }
+    } catch (err) {
+      console.error(err);
+      const message =
+        err.response?.data?.message ||
+        err.message ||
+        "Failed to delete appointment";
+      alert(message);
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   if (sessionLoading || loading) {
@@ -119,6 +152,16 @@ export default function AppointmentsPage() {
                     className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
                   >
                     Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(item)}
+                    disabled={deletingId === item._id}
+                    className="rounded-lg border border-red-200 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 disabled:opacity-50"
+                  >
+                    {deletingId === item._id
+                      ? "Deleting…"
+                      : "Delete"}
                   </button>
                 </div>
               </div>

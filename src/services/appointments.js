@@ -16,3 +16,9 @@ export const updateAppointment = async (id, payload) => {
   const res = await api.put(`/appointments/${id}`, payload);
   return res.data;
 };
+
+// Delete appointment
+export const deleteAppointment = async (id) => {
+  const res = await api.delete(`/appointments/${id}`);
+  return res.data;
+};
