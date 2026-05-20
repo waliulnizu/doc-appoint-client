@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 
-import DoctorCard from "@/components/doctors/DoctorCard";
+import { getDoctors } from "@/services/doctors";
 
 import Loading from "@/components/shared/Loading";
 
-import { getDoctors } from "@/services/doctors";
+import DoctorCard from "@/components/doctors/DoctorCard";
 
-export default function HomePage() {
+export default function DoctorsPage() {
   const [doctors, setDoctors] = useState([]);
 
   const [loading, setLoading] = useState(true);
@@ -34,12 +34,12 @@ export default function HomePage() {
   }
 
   return (
-    <div className="p-10">
-      <h1 className="text-4xl font-bold mb-8">
-        DocAppoint Doctors
+    <main className="max-w-6xl mx-auto px-5 py-10">
+      <h1 className="text-4xl font-bold mb-10">
+        Our Doctors
       </h1>
 
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {doctors.map((doctor) => (
           <DoctorCard
             key={String(doctor._id)}
@@ -47,6 +47,6 @@ export default function HomePage() {
           />
         ))}
       </div>
-    </div>
+    </main>
   );
 }

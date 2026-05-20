@@ -7,3 +7,10 @@ export const getDoctors = async () => {
 };
 
 
+export const getSingleDoctor = async (id) => {
+  const response = await api.get(
+    `/doctors/${id}`
+  );
+
+  return response.data;
+};
