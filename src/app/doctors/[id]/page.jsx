@@ -2,23 +2,36 @@
 
 import { useEffect, useState } from "react";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 import { Button, Card } from "@heroui/react";
 
 import Loading from "@/components/shared/Loading";
 
+import BookAppointmentModal from "@/components/appointments/appointments";
+
+import { useSession } from "@/hooks/useSession";
+
 import { getSingleDoctor } from "@/services/doctors";
 
 export default function DoctorDetailsPage() {
   const params = useParams();
+  const router = useRouter();
+  const { user } = useSession();
 
-  const [doctor, setDoctor] = useState(
-    null
-  );
+  const [doctor, setDoctor] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
 
-  const [loading, setLoading] =
-    useState(true);
+  const handleBookClick = () => {
+    if (!user) {
+      alert("Please login first to book an appointment.");
+      router.push("/login");
+      return;
+    }
+
+    setOpen(true);
+  };
 
   useEffect(() => {
     const loadDoctor = async () => {
@@ -91,11 +104,25 @@ export default function DoctorDetailsPage() {
           <Button
             variant="primary"
             className="mt-6"
+            onPress={handleBookClick}
           >
             Book Appointment
           </Button>
         </Card.Content>
       </Card>
+
+      {/* 👇 MODAL */}
+      {open && (
+        <BookAppointmentModal
+          doctor={doctor}
+          user={user}
+          onClose={() => setOpen(false)}
+          onSuccess={() => {
+            setOpen(false);
+            router.push("/appointments");
+          }}
+        />
+      )}
     </main>
   );
 }
