@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
 import { Button } from "@heroui/react";
 
@@ -14,22 +14,37 @@ import { authClient } from "@/lib/auth-client";
 
 import { showError, showSuccess } from "@/lib/toast";
 
+import {
+  getAvatarFallback,
+  getProfileFormValues,
+  getUserImage,
+} from "@/utils/userProfile";
+
 export default function MyProfile({ user, onUpdated }) {
   const [editing, setEditing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
-  const { register, handleSubmit, reset } = useForm({
-    defaultValues: {
-      name: user?.name || "",
-      image: user?.image || "",
-    },
+  const profileImage = getUserImage(user);
+  const avatarSrc =
+    !imgError && profileImage
+      ? profileImage
+      : getAvatarFallback(user?.name, user?.email);
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+  } = useForm({
+    defaultValues: getProfileFormValues(user),
   });
 
+  useEffect(() => {
+    reset(getProfileFormValues(user));
+  }, [user, reset]);
+
   const openEdit = () => {
-    reset({
-      name: user?.name || "",
-      image: user?.image || "",
-    });
+    reset(getProfileFormValues(user));
     setEditing(true);
   };
 
@@ -39,7 +54,7 @@ export default function MyProfile({ user, onUpdated }) {
     try {
       const result = await authClient.updateUser({
         name: data.name,
-        image: data.image || undefined,
+        image: data.image?.trim() || undefined,
       });
 
       if (result.error) {
@@ -63,11 +78,11 @@ export default function MyProfile({ user, onUpdated }) {
     <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
         <img
-          src={
-            user?.image ||
-            "https://ui-avatars.com/api/?name=User&background=2563eb&color=fff"
-          }
+          key={avatarSrc}
+          src={avatarSrc}
           alt={user?.name || "Profile"}
+          referrerPolicy="no-referrer"
+          onError={() => setImgError(true)}
           className="h-24 w-24 rounded-full border-4 border-blue-100 object-cover"
         />
 
@@ -92,35 +107,55 @@ export default function MyProfile({ user, onUpdated }) {
           onSubmit={handleSubmit(onSubmit)}
           className="mt-8 space-y-4 border-t border-slate-100 pt-6"
         >
-          <AuthField label="Name">
-            <div className="relative">
-              <HiOutlineUser
-                className="pointer-events-none absolute left-3 top-1/2 z-10 -translate-y-1/2 text-lg text-slate-400"
-                aria-hidden
-              />
-              <AuthInput
-                className="pl-10"
-                {...register("name", {
-                  required: "Name is required",
-                })}
-              />
-            </div>
-          </AuthField>
+          <Controller
+            name="name"
+            control={control}
+            rules={{ required: "Name is required" }}
+            render={({ field, fieldState }) => (
+              <AuthField
+                label="Name"
+                error={fieldState.error?.message}
+              >
+                <div className="relative">
+                  <HiOutlineUser
+                    className="pointer-events-none absolute left-3 top-1/2 z-10 -translate-y-1/2 text-lg text-slate-400"
+                    aria-hidden
+                  />
+                  <AuthInput
+                    className="pl-10"
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                  />
+                </div>
+              </AuthField>
+            )}
+          />
 
-          <AuthField label="Photo URL">
-            <div className="relative">
-              <HiOutlinePhotograph
-                className="pointer-events-none absolute left-3 top-1/2 z-10 -translate-y-1/2 text-lg text-slate-400"
-                aria-hidden
-              />
-              <AuthInput
-                type="url"
-                placeholder="https://…"
-                className="pl-10"
-                {...register("image")}
-              />
-            </div>
-          </AuthField>
+          <Controller
+            name="image"
+            control={control}
+            render={({ field }) => (
+              <AuthField label="Photo URL">
+                <div className="relative">
+                  <HiOutlinePhotograph
+                    className="pointer-events-none absolute left-3 top-1/2 z-10 -translate-y-1/2 text-lg text-slate-400"
+                    aria-hidden
+                  />
+                  <AuthInput
+                    type="url"
+                    placeholder="https://…"
+                    className="pl-10"
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                  />
+                </div>
+              </AuthField>
+            )}
+          />
 
           <p className="text-sm text-slate-500">
             Email cannot be changed here (read-only for security).

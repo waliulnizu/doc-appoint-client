@@ -1,12 +1,26 @@
 "use client";
 
+import { useState } from "react";
+
 import Link from "next/link";
+
 import { useSession } from "@/hooks/useSession";
+
+import {
+  getAvatarFallback,
+  getUserImage,
+} from "@/utils/userProfile";
 
 export default function Navbar() {
   const { session, loading } = useSession();
+  const [imgError, setImgError] = useState(false);
 
   const user = session?.user;
+  const profileImage = getUserImage(user);
+  const avatarSrc =
+    !imgError && profileImage
+      ? profileImage
+      : getAvatarFallback(user?.name, user?.email);
 
   return (
     <nav className="border-b bg-white shadow-sm">
@@ -39,12 +53,12 @@ export default function Navbar() {
 
               {/* User Image */}
               <img
-                src={
-                  user.image ||
-                  "https://i.ibb.co/placeholder.png"
-                }
+                key={avatarSrc}
+                src={avatarSrc}
                 alt={user.name}
-                className="w-8 h-8 rounded-full object-cover"
+                referrerPolicy="no-referrer"
+                onError={() => setImgError(true)}
+                className="h-8 w-8 rounded-full object-cover"
               />
 
               {/* User Name */}
