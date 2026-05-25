@@ -13,15 +13,23 @@ import { getDoctors } from "@/services/doctors";
 export default function DoctorsPage() {
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [search, setSearch] = useState("");
 
   useEffect(() => {
     const loadDoctors = async () => {
       try {
+        setError("");
         const data = await getDoctors();
         setDoctors(data.data || []);
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        console.error(err);
+        setDoctors([]);
+        setError(
+          err.response?.data?.message ||
+            err.message ||
+            "Could not load doctors. Check NEXT_PUBLIC_SERVER_URL and Render CORS (CLIENT_URL)."
+        );
       } finally {
         setLoading(false);
       }
@@ -67,11 +75,23 @@ export default function DoctorsPage() {
         />
       </div>
 
-      {filtered.length === 0 ? (
+      {error ? (
+        <p className="mt-12 text-center text-red-600">{error}</p>
+      ) : null}
+
+      {!error && doctors.length === 0 ? (
+        <p className="mt-12 text-center text-slate-500">
+          No doctors in the database yet. Add doctors in MongoDB Atlas.
+        </p>
+      ) : null}
+
+      {!error && doctors.length > 0 && filtered.length === 0 ? (
         <p className="mt-12 text-center text-slate-500">
           No doctors match your search.
         </p>
-      ) : (
+      ) : null}
+
+      {!error && filtered.length > 0 ? (
         <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filtered.map((doctor) => (
             <DoctorCard
@@ -80,7 +100,7 @@ export default function DoctorsPage() {
             />
           ))}
         </div>
-      )}
+      ) : null}
     </main>
   );
 }

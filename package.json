@@ -6,6 +6,8 @@
     "dev": "next dev",
     "dev:no-turbo": "next dev --no-turbo",
     "build": "next build",
+    "vercel-build": "next build",
+    "deploy": "vercel --prod",
     "start": "next start",
     "lint": "eslint"
   },

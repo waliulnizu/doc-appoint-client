@@ -5,10 +5,36 @@ const serverUrl =
 
 const nextConfig = {
   async rewrites() {
+    const base = serverUrl.replace(/\/$/, "");
+
     return [
       {
         source: "/api/auth/:path*",
-        destination: `${serverUrl}/api/auth/:path*`,
+        destination: `${base}/api/auth/:path*`,
+      },
+      {
+        source: "/api/doctors",
+        destination: `${base}/api/doctors`,
+      },
+      {
+        source: "/api/doctors/:path*",
+        destination: `${base}/api/doctors/:path*`,
+      },
+      {
+        source: "/api/appointments",
+        destination: `${base}/api/appointments`,
+      },
+      {
+        source: "/api/appointments/:path*",
+        destination: `${base}/api/appointments/:path*`,
+      },
+      {
+        source: "/api/reviews",
+        destination: `${base}/api/reviews`,
+      },
+      {
+        source: "/api/reviews/:path*",
+        destination: `${base}/api/reviews/:path*`,
       },
     ];
   },
