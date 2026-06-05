@@ -126,6 +126,4 @@ Deploy **after** the backend is live on Vercel (see `doc-appoint-server/README.m
 
 Backend API & auth: **doc-appoint-server**
 
-## Author
 
-Programming Hero assignment — Doctor Appointment Manager (DocAppoint).
