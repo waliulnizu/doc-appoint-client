@@ -357,8 +357,8 @@ The frontend is optimized for zero-config deployment on **Vercel**:
 
 ## 👨‍💻 Author & License
 
-**Waliul Islam Nizu**  
-Full-Stack Web Developer  
+**S.M. Waliul Hasan Nizu**  
+MERN Stack Developer  
 - GitHub: [@waliulnizu](https://github.com/waliulnizu)
 
 This project is open source and available under the [MIT License](LICENSE).
