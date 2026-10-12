@@ -163,7 +163,7 @@ doc-appoint-client/
 ├── 📄 .env                         # Local environment variables (git-ignored)
 ├── 📄 .env.example                 # Template for environment variables
 ├── 📄 next.config.mjs              # Next.js configuration & API rewrites proxy
-├── 📄 package.json                 # Dependencies and npm scripts
+├── 📄 package.json                 # Dependencies and pnpm scripts
 ├── 📁 public/
 │   ├── 📁 images/                  # Static assets (hero banners, doctors, icons)
 │   └── 📄 favicon.ico
@@ -213,7 +213,9 @@ doc-appoint-client/
     │   │   ├── 📄 FAQSection.jsx
     │   │   ├── 📄 StatsSection.jsx
     │   │   ├── 📄 BlogSection.jsx
-    │   │   └── 📄 CTASection.jsx
+    │   │   ├── 📄 CTASection.jsx
+    │   │   ├── 📄 AppDownloadSection.jsx
+    │   │   └── 📄 GeriatricsSection.jsx
     │   ├── 📁 reviews/             # Review components
     │   │   └── 📄 DoctorReviews.jsx
     │   └── 📁 shared/              # Reusable layout components
@@ -263,7 +265,7 @@ cp .env.example .env
 
 ### 1. Prerequisites
 - **Node.js**: `v20.x` or higher recommended (minimum `v18.18+`)
-- **Package Manager**: `npm` or `pnpm`
+- **Package Manager**: `pnpm` (this project uses `pnpm` — `pnpm-lock.yaml` is the lockfile)
 - **Backend Running**: Have the backend running locally on port 5000 (see [Server README](../doc-appoint-server/README.md))
 
 ### 2. Clone the Repository
@@ -274,7 +276,7 @@ cd doc-appoint-client
 
 ### 3. Install Dependencies
 ```bash
-npm install
+pnpm install
 ```
 
 ### 4. Configure Environment
@@ -289,14 +291,14 @@ NEXT_PUBLIC_SERVER_URL=http://localhost:5000
 
 ### 5. Run Development Server
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Open your browser at **[http://localhost:3000](http://localhost:3000)**.
 
 > **Tip**: If you encounter memory issues with Turbopack on your platform, you can run without Turbopack:
 > ```bash
-> npm run dev:no-turbo
+> pnpm dev:no-turbo
 > ```
 
 ---
