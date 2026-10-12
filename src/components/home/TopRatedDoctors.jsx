@@ -21,7 +21,10 @@ export default function TopRatedDoctors({
     <section className="mx-auto max-w-7xl px-5 py-16">
       <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-bold text-slate-900">
+          <p className="inline-block rounded-full bg-blue-600 px-4 py-1 text-sm font-semibold text-white">
+            ● Top Rated Doctors ●
+          </p>
+          <h2 className="mt-3 text-3xl font-bold text-slate-900 md:text-4xl">
             Top Rated Doctors
           </h2>
           <p className="mt-2 text-slate-500">
@@ -30,7 +33,7 @@ export default function TopRatedDoctors({
         </div>
         <Link
           href="/doctors"
-          className="text-sm font-semibold text-blue-600 hover:underline"
+          className="rounded-full border-2 border-blue-600 px-6 py-2.5 text-sm font-semibold text-blue-600 transition hover:bg-blue-50"
         >
           View all doctors →
         </Link>

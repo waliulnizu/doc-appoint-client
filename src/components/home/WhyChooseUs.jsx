@@ -1,58 +1,40 @@
-import {
-  HiOutlineClock,
-  HiOutlineShieldCheck,
-  HiOutlineUserGroup,
-} from "react-icons/hi";
-
-const features = [
-  {
-    icon: HiOutlineUserGroup,
-    title: "Trusted specialists",
-    description:
-      "Browse verified doctors across multiple hospitals and specialties.",
-  },
-  {
-    icon: HiOutlineClock,
-    title: "Quick booking",
-    description:
-      "Pick a date and time in minutes without phone calls or long waits.",
-  },
-  {
-    icon: HiOutlineShieldCheck,
-    title: "Secure account",
-    description:
-      "Your bookings and profile are protected with Better Auth sessions.",
-  },
-];
-
 export default function WhyChooseUs() {
   return (
-    <section className="bg-slate-50 py-16">
-      <div className="mx-auto max-w-7xl px-5">
-        <h2 className="text-center text-3xl font-bold text-slate-900">
-          Why choose DocAppoint?
-        </h2>
-        <p className="mx-auto mt-2 max-w-2xl text-center text-slate-500">
-          Everything you need to find care and manage appointments in one
-          place.
-        </p>
+    <section className="relative overflow-hidden bg-slate-950 py-16 text-white">
+      <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 md:grid-cols-2">
+        <div>
+          <p className="inline-block rounded-full bg-blue-600 px-4 py-1 text-sm font-semibold">
+            Why Book With Us
+          </p>
+          <h2 className="mt-4 text-4xl font-extrabold leading-tight">
+            We are committed to understanding your{" "}
+            <span className="text-blue-400">unique needs and delivering care</span>
+          </h2>
+          <p className="mt-4 text-slate-400">
+            As a trusted healthcare provider, we promote health and wellness through outreach programs, health fairs, and educational workshops.
+          </p>
+        </div>
 
-        <div className="mt-12 grid gap-8 md:grid-cols-3">
-          {features.map(({ icon: Icon, title, description }) => (
-            <article
-              key={title}
-              className="rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm"
+        <div className="space-y-4">
+          {[
+            {
+              title: "Our Vision",
+              text: "We envision a community where everyone has access to high-quality healthcare and the resources they need.",
+            },
+            {
+              title: "Our Mission",
+              text: "We combine medical excellence with empathy to support your health journey.",
+            },
+          ].map((item, i) => (
+            <div
+              key={item.title}
+              className="rounded-2xl border border-white/10 bg-slate-900/60 p-6"
             >
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-                <Icon className="text-2xl" aria-hidden />
-              </div>
-              <h3 className="mt-4 text-xl font-semibold text-slate-900">
-                {title}
+              <h3 className="text-blue-400">
+                0{i + 1} . {item.title}
               </h3>
-              <p className="mt-2 text-sm text-slate-500">
-                {description}
-              </p>
-            </article>
+              <p className="mt-2 text-sm text-slate-400">{item.text}</p>
+            </div>
           ))}
         </div>
       </div>

@@ -22,3 +22,11 @@ export const deleteAppointment = async (id) => {
   const res = await api.delete(`/appointments/${id}`);
   return res.data;
 };
+
+// Get available/booked 30-min slots for a doctor on a date
+export const getDoctorSlots = async (doctorId, date) => {
+  const res = await api.get(`/appointments/slots/${doctorId}`, {
+    params: { date },
+  });
+  return res.data;
+};

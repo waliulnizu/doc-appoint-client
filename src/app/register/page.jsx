@@ -195,7 +195,7 @@ export default function RegisterPage() {
           type="submit"
           variant="primary"
           fullWidth
-          className="mt-1 min-h-11 text-base font-semibold"
+          className="mt-1 min-h-11 text-base font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg"
           isDisabled={submitting}
         >
           {submitting ? "Creating account…" : "Register"}

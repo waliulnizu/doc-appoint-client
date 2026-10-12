@@ -2,3 +2,52 @@
 @import "@heroui/styles";
 
 @plugin "daisyui";
+
+/* Fix browser autofill (autocomplete) default background */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px white inset;
+  -webkit-text-fill-color: #1e293b;
+  border: 1px solid #cbd5e1;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* ---------- Calendar open / close animation ---------- */
+@keyframes calendarOpen {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    max-height: 340px;
+  }
+}
+
+@keyframes calendarClose {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    max-height: 340px;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+    max-height: 0;
+  }
+}
+
+.animate-calendar-open {
+  overflow: hidden;
+  animation: calendarOpen 260ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-calendar-close {
+  overflow: hidden;
+  animation: calendarClose 200ms cubic-bezier(0.4, 0, 1, 1) forwards;
+}

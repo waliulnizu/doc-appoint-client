@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
+
+import { useSearchParams } from "next/navigation";
 
 import { HiOutlineSearch } from "react-icons/hi";
 
@@ -10,11 +12,17 @@ import Loading from "@/components/shared/Loading";
 
 import { getDoctors } from "@/services/doctors";
 
-export default function DoctorsPage() {
+function DoctorsContent() {
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const q = searchParams.get("search") || searchParams.get("specialty") || "";
+    if (q) setSearch(q);
+  }, [searchParams]);
 
   useEffect(() => {
     const loadDoctors = async () => {
@@ -44,7 +52,9 @@ export default function DoctorsPage() {
     if (!query) return doctors;
 
     return doctors.filter((doctor) =>
-      (doctor.name || "").toLowerCase().includes(query)
+      (doctor.name || "").toLowerCase().includes(query) ||
+      (doctor.specialty || "").toLowerCase().includes(query) ||
+      (doctor.hospital || "").toLowerCase().includes(query)
     );
   }, [doctors, search]);
 
@@ -71,7 +81,7 @@ export default function DoctorsPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search by doctor name…"
-          className="input input-bordered w-full pl-10"
+          className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200 placeholder:text-slate-400"
         />
       </div>
 
@@ -102,5 +112,13 @@ export default function DoctorsPage() {
         </div>
       ) : null}
     </main>
+  );
+}
+
+export default function DoctorsPage() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <DoctorsContent />
+    </Suspense>
   );
 }
